@@ -5,8 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import nl.tudelft.jpacman.level.Player;
 
@@ -42,12 +41,12 @@ public class ScorePanel extends JPanel {
     /**
      * The map of players and the labels their scores are on.
      */
-    private final Map<Player, JLabel> scoreLabels;
+    private final transient Map<Player, JLabel> scoreLabels;
 
     /**
      * The map of players and the labels their lives are on.
      */
-    private final Map<Player, JLabel> livesLabels;
+    private final transient Map<Player, JLabel> livesLabels;
 
     /**
      * The default way in which the score is shown.
@@ -78,19 +77,22 @@ public class ScorePanel extends JPanel {
      */
     public ScorePanel(List<Player> players) {
         super();
-        assert players != null;
+
+        if (players == null) {
+            throw new IllegalArgumentException("Players list cannot be null");
+        }
 
         setLayout(new GridLayout(3, players.size()));
 
         for (int i = 1; i <= players.size(); i++) {
-            add(new JLabel( PLAYER_LABEL_PREFIX + i, JLabel.CENTER));
+            add(new JLabel( PLAYER_LABEL_PREFIX + i, SwingConstants.CENTER));
         }
 
         scoreLabels = new LinkedHashMap<>();
         livesLabels = new LinkedHashMap<>();
         for (Player player : players) {
-            JLabel scoreLabel = new JLabel(DEFAULT_SCORE_TEXT, JLabel.CENTER);
-            JLabel livesLabel = new JLabel(DEFAULT_LIVES_TEXT + player.getLives(), JLabel.CENTER);
+            JLabel scoreLabel = new JLabel(DEFAULT_SCORE_TEXT, SwingConstants.CENTER);
+            JLabel livesLabel = new JLabel(DEFAULT_LIVES_TEXT + player.getLives(), SwingConstants.CENTER);
             scoreLabels.put(player, scoreLabel);
             livesLabels.put(player, livesLabel);
             add(scoreLabel);
@@ -160,8 +162,10 @@ public class ScorePanel extends JPanel {
      * Let the score panel use a dedicated score formatter.
      * @param scoreFormatter Score formatter to be used.
      */
-    public void setScoreFormatter(ScoreFormatter scoreFormatter) {
-        assert scoreFormatter != null;
-        this.scoreFormatter = scoreFormatter;
+    public static void setScoreFormatter(ScoreFormatter scoreFormatter) {
+        if (scoreFormatter == null) {
+            throw new IllegalArgumentException("ScoreFormatter cannot be null");
+        }
+        ScorePanel.scoreFormatter = scoreFormatter;
     }
 }
