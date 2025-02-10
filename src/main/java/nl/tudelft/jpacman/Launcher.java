@@ -54,7 +54,7 @@ public class Launcher {
      * Set the name of the file containing this level's map.
      *
      * @param fileName
-     *                 Map to be used.
+     *            Map to be used.
      * @return Level corresponding to the given map.
      */
     public Launcher withMapFile(String fileName) {
@@ -89,7 +89,7 @@ public class Launcher {
             return getMapParser().parseMap(getLevelMap());
         } catch (IOException e) {
             throw new PacmanConfigurationException(
-                    "Unable to create level, name = " + getLevelMap() + ". Error: " + e.getMessage(), e);
+                    "Unable to create level, name = " + getLevelMap(), e);
         }
     }
 
@@ -149,7 +149,7 @@ public class Launcher {
      * Adds key events UP, DOWN, LEFT and RIGHT to a game.
      *
      * @param builder
-     *                The {@link PacManUiBuilder} that will provide the UI.
+     *            The {@link PacManUiBuilder} that will provide the UI.
      */
     protected void addSinglePlayerKeys(final PacManUiBuilder builder) {
         builder.addKey(KeyEvent.VK_UP, moveTowardsDirection(Direction.NORTH))
@@ -160,9 +160,7 @@ public class Launcher {
 
     private Action moveTowardsDirection(Direction direction) {
         return () -> {
-            if (game == null) {
-                throw new IllegalStateException("Game is not initialized.");
-            }
+            assert game != null;
             getGame().move(getSinglePlayer(getGame()), direction);
         };
     }
@@ -193,9 +191,7 @@ public class Launcher {
      * Precondition: The game was launched first.
      */
     public void dispose() {
-        if (pacManUI == null) {
-            throw new IllegalStateException("PacManUI is not initialized.");
-        }
+        assert pacManUI != null;
         pacManUI.dispose();
     }
 
@@ -203,9 +199,9 @@ public class Launcher {
      * Main execution method for the Launcher.
      *
      * @param args
-     *             The command line arguments - which are ignored.
+     *            The command line arguments - which are ignored.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         new Launcher().launch();
     }
 }
