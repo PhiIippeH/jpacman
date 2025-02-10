@@ -15,6 +15,16 @@ import nl.tudelft.jpacman.sprite.Sprite;
 public class Player extends Unit {
 
     /**
+     * Initial score for a new player
+     */
+    private static final int INITIAL_SCORE = 0;
+
+    /**
+     *  Initial number of lives for a new player
+     */
+    private static final int INITIAL_LIVES = 3;
+
+    /**
      * The amount of points accumulated by this player.
      */
     private int score;
@@ -40,15 +50,19 @@ public class Player extends Unit {
     private Unit killer;
 
     /**
-     * Creates a new player with a score of 0 points.
+     * The number of lives remaining for this player.
+     */
+    private int lives;
+
+    /**
+     * Creates a new player with initial score and lives.
      *
-     * @param spriteMap
-     *            A map containing a sprite for this player for every direction.
-     * @param deathAnimation
-     *            The sprite to be shown when this player dies.
+     * @param spriteMap A map containing a sprite for this player for every direction.
+     * @param deathAnimation The sprite to be shown when this player dies.
      */
     protected Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
-        this.score = 0;
+        this.score = INITIAL_SCORE;
+        this.lives = INITIAL_LIVES;
         this.alive = true;
         this.sprites = spriteMap;
         this.deathSprite = deathAnimation;
@@ -66,21 +80,34 @@ public class Player extends Unit {
 
     /**
      * Sets whether this player is alive or not.
-     *
+     * <p>
      * If the player comes back alive, the {@link killer} will be reset.
      *
-     * @param isAlive
-     *            <code>true</code> iff this player is alive.
+     * @param isAlive <code>true</code> if this player is alive, <code>false</code> otherwise.
      */
     public void setAlive(boolean isAlive) {
         if (isAlive) {
-            deathSprite.setAnimating(false);
-            this.killer = null;
-        }
-        if (!isAlive) {
-            deathSprite.restart();
+            revivePlayer();
+        } else {
+            killPlayer();
         }
         this.alive = isAlive;
+    }
+
+    /**
+     * Revives the player by stopping the death animation and resetting the killer.
+     */
+    private void revivePlayer() {
+        deathSprite.setAnimating(false);
+        this.killer = null;
+    }
+
+    /**
+     * Kills the player by decrementing the lives and restarting the death animation.
+     */
+    private void killPlayer() {
+        this.lives--;
+        deathSprite.restart();
     }
 
     /**
@@ -110,6 +137,15 @@ public class Player extends Unit {
         return score;
     }
 
+    /**
+     * Returns the number of lives remaining for this player.
+     *
+     * @return The number of lives remaining.
+     */
+    public int getLives() {
+        return lives;
+    }
+
     @Override
     public Sprite getSprite() {
         if (isAlive()) {
@@ -128,4 +164,6 @@ public class Player extends Unit {
     public void addPoints(int points) {
         score += points;
     }
+
+
 }
